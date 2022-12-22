@@ -25,7 +25,7 @@ print(fruit + " " + color)
 
 -- The full code below is:
 
-print("Hello" + "" + input("What is your name?") + " " + "thank you for using our Band Name generator!")
+print("Hello" + " " + input("What is your name?") + " " + "thank you for using our Band Name generator!")
 city = input("What amazing city did you grow up in?\n")
 pet = input("What is/will be the name of your lovely pet?\n")
 color = input("What is your favorite color?\n")
