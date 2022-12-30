@@ -1,0 +1,12 @@
+#wpt = what percentage tip
+#hmp = how many people
+#pt = percentage tip
+
+print("Welcome to the tip calculator guide!")
+bill = input("What was the total bill?")
+wpt = input("What percentage tip would you like to give? 10, 15, 20 or 25?")
+hmp = input("How many people to split the bill?")
+pt = (int(wpt) / 100)
+tip = (pt * int(bill))
+total_bill = ((tip + int(bill))/int(hmp))
+print(f"Each person should pay $ {total_bill}")
