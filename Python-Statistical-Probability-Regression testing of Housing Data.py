@@ -95,7 +95,7 @@ plt.show()
 from scipy.stats import f_oneway
 
 #Note we use f_oneway to compare the means of the six groups 
-# based on the number of bedrooms, which are created by dividing 
+# based on the number of bedrooms which are created by dividing 
 # the dataset into six groups based on the number of bedrooms
 
 
@@ -124,11 +124,9 @@ print("p-value: ", p)
 
 
 
-#6. Multiple regression for comparing price, bedrooms and area in square feet,k
+#6. Multiple regression for comparing price, bedrooms and area in square feet
 import statsmodels.api as sm
 
-
-data = pd.read_csv("C:\\Users\\alexi\\Desktop\\python project\\Housing_data.csv")
 
 # Select the predictor variables (bedrooms and area) and the response variable (price)
 X = data[["bedrooms", "area"]]
