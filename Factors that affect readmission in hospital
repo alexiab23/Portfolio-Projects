@@ -1,0 +1,155 @@
+#PART C and D
+import pandas as pd 
+import matplotlib.pyplot as plt
+import seaborn as sns
+from sklearn.impute import SimpleImputer
+from sklearn.preprocessing import LabelEncoder
+from scipy.stats import zscore
+import numpy as np
+from scipy.stats import shapiro
+
+
+#PART C
+
+#Import dataset from csv file
+medical_data = pd.read_csv('C://Users//alexi//Desktop//D206//MEDICAL DATASET//medical_raw_data.csv') 
+print(medical_data.head())
+
+
+
+#ConvertING columns to appropriate data types
+for col in medical_data.columns:
+    if medical_data[col].dtype == 'object':
+        medical_data[col] = pd.Categorical(medical_data[col])
+    elif medical_data[col].dtype == 'float64':
+        medical_data[col] = pd.to_numeric(medical_data[col], errors='coerce')
+
+
+
+#Check the data type of each column
+print(medical_data.dtypes)
+
+
+
+
+#Checking for missing values in the data -- mv is short for missing values
+mv = medical_data.isnull().sum()
+mv_age = medical_data['Age'].isnull().mean() * 100
+mv_income = medical_data['Income'].isnull().mean() * 100
+mv_overweight = medical_data['Overweight'].isnull().mean() * 100
+mv_children = medical_data['Children'].isnull().mean() * 100
+mv_sd = medical_data['Soft_drink'].isnull().mean() * 100
+mv_anx = medical_data['Anxiety'].isnull().mean() * 100
+mv_idays = medical_data['Initial_days'].isnull().mean() * 100
+
+
+print(mv)
+print(mv_age)
+print(mv_income)
+print(mv_overweight)
+print(mv_children)
+print(mv_sd)
+print(mv_anx)
+print(mv_idays)
+
+
+
+
+
+
+#Impute missing values in 'Anxiety anfd Soft Drink' column with the most frequent
+imputer_mf= SimpleImputer(strategy='most_frequent')
+cols_mq_imputed = imputer_mf.fit_transform(medical_data[['Anxiety', 'Soft_drink']])
+
+#Impute missing values in 'Age' and 'Overweight' columns with the mean
+imputer_mean = SimpleImputer(strategy='mean')
+cols_mean_imputed = imputer_mean.fit_transform(medical_data[['Age', 'Overweight']])
+
+#Impute missing values in 'Income'and 'Children and 'Initial_days' column with the median
+imputer_median = SimpleImputer(strategy='median')
+cols_median_imputed = imputer_median.fit_transform(medical_data[['Income', 'Children', 'Initial_days']])
+
+
+#Replace missing values in columns with imputed values
+cols_mq_imputed = medical_data[['Anxiety', 'Soft_drink']] 
+cols_mean_imputed = medical_data[['Age', 'Overweight']] 
+cols_median_imputed = medical_data[['Income','Children', 'Initial_days']]
+
+
+#Check for any remaining missing values
+print(medical_data.isnull().sum())
+
+
+
+
+
+#Checking to see if the data is skewed or normal
+plt.hist(medical_data[['Population', 'Children', 'Age', 'Income', 'VitD_levels', 'Overweight', 'Initial_days']])
+plt.show()
+#results --> Reversed J shape/skew right
+
+
+
+
+
+
+#Finding duplicate columns
+dup_cols = medical_data.columns.duplicated()
+
+#Print the number and name of duplicate columns
+print("Number of duplicate columns:", sum(dup_cols))
+print("Names of duplicate columns:", list(medical_data.columns[dup_cols]))
+
+#Finding duplicates rows in the data 
+dup = medical_data.duplicated()
+print(dup.sum())
+print(dup)
+
+
+
+
+
+
+
+#Check for any outliers in the data
+print(medical_data.describe())  # check for outliers
+print(medical_data[['Age', 'Income', 'VitD_levels']].describe())  #check for outliers
+
+
+
+
+
+#Box plot
+sns.boxplot(data=medical_data[['Age', 'Income', 'VitD_levels']])
+plt.show()
+
+
+#Z-score
+selected_cols = ['Age', 'Income', 'VitD_levels']
+md_zscore = zscore(medical_data[selected_cols], axis=0)
+print(md_zscore)
+
+
+#Scatter plot using seaborn
+sns.scatterplot(data=medical_data, x="Age", y="Income")
+plt.show()
+
+
+
+
+#Scatter plot using matplotlib
+plt.scatter(medical_data['Age'], medical_data['Income'])
+plt.xlabel('Age')
+plt.ylabel('Income')
+plt.title('Age vs. Income Scatterplot')
+plt.show()
+
+
+#Interquartile range (IQR) of the Income column
+Q1 = medical_data['Income'].quantile(0.25)
+Q3 = medical_data['Income'].quantile(0.75)
+IQR = Q3 - Q1
+filter_outliers = medical_data[(medical_data['Income'] >= Q1 - 1.5 * IQR) & (medical_data['Income'] <= Q3 + 1.5 * IQR)]
+
+
+#medical_data.to_csv('revised_cleaned_data.csv', index=True)
